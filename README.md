@@ -30,3 +30,6 @@ IMAGES_NAME=
 
 ## Start the app
 `yarn start` or `npm start`
+
+# Updating images
+The bot will cache the images in your album, when adding new images to your album make sure to run `<command> refresh`.
