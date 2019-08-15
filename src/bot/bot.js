@@ -16,7 +16,7 @@ client.on('ready', () => {
 
 async function showImage(msg, params) {
   const count = await images.count();
-  const random = params.length < 0 && !isFinite(parseInt(params[0]));
+  const random = isNaN(parseInt(params[0]));
   const index = random ? getRandom(count) : parseInt(params[0]);
   const image = await images.get(index);
 
@@ -87,8 +87,6 @@ client.on('message', async msg => {
           return addImage(msg, params);
         case "list":
           return listImages(msg, params);
-        case "delete":
-          return deleteImage(msg, params);
         default:
           return showImage(msg, params);
       }
