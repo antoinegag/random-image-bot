@@ -1,4 +1,5 @@
 const db = require("../db/sqlite");
+const imgur = require("./imgur");
 const { promisify } = require("util");
 
 async function get(index) {
@@ -35,12 +36,22 @@ async function list() {
 }
 exports.list = list;
 
-async function add(url, caption) {
+async function addMultiple(images) {
+  var stmt = db.prepare("INSERT INTO images (url, caption) VALUES (?, ?)");
+  images.forEach(image => {
+    stmt.run(image.link, image.description);
+  });
+  stmt.finalize();
+}
+exports.addMultiple = addMultiple;
+
+async function add(imageUrl, caption) {
+  const url = imageUrl.includes("imgur") ? await imgur.getImageUrl(imageUrl) : imageUrl;
   return new Promise((resolve, reject) => {
     const stmt = db.prepare("INSERT INTO images (url, caption) VALUES (?, ?)");
-    stmt.run(url, caption, (err, result) => {
+    stmt.get(url, caption, (err, result) => {
       if(err) reject(err);
-      else resolve();
+      else resolve(result);
     });
     stmt.finalize();
   });
