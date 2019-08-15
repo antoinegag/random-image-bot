@@ -47,9 +47,12 @@ async function importAlbum(msg, params) {
   }
 
   const match = params[1].match(ALBUM_REGEX);
+  console.log(params);
   if(match && match.length === 2) {
     const newImages = await imgur.fetchAlbumImages(match[1]);
-    images.addMultiple(newImages);
+    images.addMultiple(newImages.map(image => { 
+      return { url: image.link, caption: image.description} 
+    }));
     msg.reply("Done!")
     return;
   }

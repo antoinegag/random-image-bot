@@ -66,7 +66,7 @@ exports.list = list;
 async function addMultiple(images) {
   var stmt = db.prepare("INSERT INTO images (url, caption) VALUES (?, ?)");
   images.forEach(image => {
-    stmt.run(image.link, image.description);
+    stmt.run(image.url, image.caption);
   });
   stmt.finalize();
 }
