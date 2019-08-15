@@ -1,11 +1,23 @@
 const db = require("../db/sqlite");
 const imgur = require("./imgur");
-const { promisify } = require("util");
 
-async function get(index) {
+/**
+ * @typedef Image
+ * @property {number} id
+ * @property {string} url
+ * @property {string} caption
+ */
+
+/**
+ * Get an image by its index
+ * @param {number} id
+ * 
+ * @returns {Promise<Image>} image
+ */
+async function get(id) {
   return new Promise((resolve, reject) => {
     const stmt = db.prepare("SELECT * FROM images WHERE id = ?");
-    stmt.get(index, (err, result) => {
+    stmt.get(id, (err, result) => {
       if(err) reject(err);
       else resolve(result);
     });
@@ -14,10 +26,16 @@ async function get(index) {
 }
 exports.get = get;
 
-async function remove(index) {
+/**
+ * Remove an image by its ID 
+ * @param {number} id 
+ * 
+ * @returns {Promise} 
+ */
+async function remove(id) {
   return new Promise((resolve, reject) => {
     const stmt = db.prepare("DELETE FROM images WHERE id = ?");
-    stmt.get(index, (err, result) => {
+    stmt.get(id, (err, result) => {
       if(err) reject(err);
       else resolve();
     });
@@ -26,6 +44,12 @@ async function remove(index) {
 }
 exports.remove = remove;
 
+
+/**
+ * List all images
+ * 
+ * @returns {Promise<Image[]>} images
+ */
 async function list() {
   return new Promise((resolve, reject) => {
     db.all("SELECT * FROM images", (err, rows) => {
@@ -36,6 +60,9 @@ async function list() {
 }
 exports.list = list;
 
+/**
+ * Add multiple images
+ */
 async function addMultiple(images) {
   var stmt = db.prepare("INSERT INTO images (url, caption) VALUES (?, ?)");
   images.forEach(image => {
@@ -45,6 +72,12 @@ async function addMultiple(images) {
 }
 exports.addMultiple = addMultiple;
 
+/**
+ * Add an image
+ *  
+ * @param {string} imageUrl 
+ * @param {string} caption
+ */
 async function add(imageUrl, caption) {
   const url = imageUrl.includes("imgur") ? await imgur.getImageUrl(imageUrl) : imageUrl;
   return new Promise((resolve, reject) => {
@@ -58,6 +91,11 @@ async function add(imageUrl, caption) {
 }
 exports.add = add;
 
+/**
+ * Count images
+ * 
+ * @returns {Promise<number>} count
+ */
 async function count() {
   return new Promise((resolve, reject) => {
     db.get("SELECT COUNT(id) FROM images", (err, count) => {

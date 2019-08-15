@@ -8,7 +8,7 @@ const db = new sqlite3.Database('./images.db', (err) => {
   
   db.run("CREATE TABLE IF NOT EXISTS images (id INTEGER PRIMARY KEY, url varchar(64), caption TEXT);")
   
-  console.log('Connected to the image database.');
+  console.info('Connected to the image database.');
 });
 
 module.exports = db;
