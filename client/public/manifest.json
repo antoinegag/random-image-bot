@@ -1,0 +1,9 @@
+{
+  "short_name": "Image management panel",
+  "name": "Discord random image bot management panel",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

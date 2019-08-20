@@ -1,7 +1,7 @@
 const COMMAND = process.env.COMMAND;
 const IMAGES_NAME = process.env.IMAGES_NAME || images;
 
-const Discord = require('discord.js');
+const Discord = require("discord.js");
 const client = new Discord.Client();
 const imgur = require("../images/imgur");
 const images = require("../images/images");
@@ -10,7 +10,7 @@ function getRandom(max) {
   return Math.floor(Math.random() * max) + 1;
 }
 
-client.on('ready', () => {
+client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
@@ -20,7 +20,7 @@ async function showImage(msg, params) {
   const index = random ? getRandom(count) : parseInt(params[0]);
   const image = await images.get(index);
 
-  if(!image) {
+  if (!image) {
     msg.reply("Failed to fetch image");
     return;
   }
@@ -39,47 +39,53 @@ async function count(msg) {
   msg.reply(`There are currently ${count} ${IMAGES_NAME}!`);
 }
 
-const ALBUM_REGEX = /https:\/\/imgur.com\/a\/(.*)/
+const ALBUM_REGEX = /https:\/\/imgur.com\/a\/(.*)/;
 async function importAlbum(msg, params) {
-  if(params.length < 2) {
+  if (params.length < 2) {
     msg.reply("Missing imgur album url");
-    return;
+    return null;
   }
 
   const match = params[1].match(ALBUM_REGEX);
   console.log(params);
-  if(match && match.length === 2) {
+  if (match && match.length === 2) {
     const newImages = await imgur.fetchAlbumImages(match[1]);
-    images.addMultiple(newImages.map(image => { 
-      return { url: image.link, caption: image.description} 
-    }));
-    msg.reply("Done!")
+    images.addMultiple(
+      newImages.map(image => {
+        return { url: image.link, caption: image.description };
+      })
+    );
+    msg.reply("Done!");
     return;
   }
-  msg.reply("Not a valid imgur album url")
+  msg.reply("Not a valid imgur album url");
 }
 
 async function addImage(msg, params) {
-  if(params.length < 3) {
+  if (params.length < 3) {
     msg.reply(`Missing URL and caption. Format: ${COMMAND} <url> <caption>`);
     return;
   }
-  
+
   images.add(params[1], params.splice(2).join(" "));
   msg.reply("Done!");
 }
 
 async function listImages(msg, params) {
   const imageList = await images.list();
-  msg.reply(`Here is a list of all the images\n${imageList.map(image => `#${image.id}: ${image.caption} (<${image.url}>)`).join("\n")}`);
+  msg.reply(
+    `Here is a list of all the images\n${imageList
+      .map(image => `#${image.id}: ${image.caption} (<${image.url}>)`)
+      .join("\n")}`
+  );
 }
 
 const COMMAND_REGEX = new RegExp(`^${COMMAND} ?(.*)`);
-client.on('message', async msg => {
+client.on("message", async msg => {
   if (msg.content.startsWith(COMMAND)) {
     const content = msg.content;
     const command = content.match(COMMAND_REGEX);
-    if(content.match(COMMAND)) {
+    if (content.match(COMMAND)) {
       const params = command[1].split(" ");
       switch (params[0]) {
         case "count":

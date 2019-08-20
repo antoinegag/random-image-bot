@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev:server": "nodemon src/index.js --config nodemon.json",
+    "dev:client": "cd client && yarn start",
+    "dev": "concurrently 'yarn run dev:server' 'yarn run dev:client'"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -17,6 +19,7 @@
     "sqlite3": "^4.0.9"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "concurrently": "^4.1.2"
   }
 }
