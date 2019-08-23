@@ -1,11 +1,19 @@
 import React from "react";
-import "./App.css";
+import { Container } from "reactstrap";
+import { BrowserRouter, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Home from "./pages/Home";
+import Edit from "./pages/Edit";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Hello World!</h1>
-    </div>
+    <BrowserRouter>
+      <NavBar />
+      <Container className="pt-2">
+        <Route exact path="/" component={Home} />
+        <Route path="/edit/:id" component={Edit} />
+      </Container>
+    </BrowserRouter>
   );
 }
 
